@@ -6,7 +6,7 @@ if (Deno.args.length == 0) {
 }
 const path = Deno.args[0];
 const fns = (await dir2array(path)).filter(fn => fn.endsWith(".png"));
-const items = fns.map(fn => `<div class=divimg><img src=${fn}><div class=divimgtxt>${fn.substring(0, fn.length - 4).replace(/_/g, " ")}</div></div>`).join("\n");
+const items = fns.map(fn => `<div class=divimg><a href=${fn}><img src=${fn}></a><div class=divimgtxt>${fn.substring(0, fn.length - 4).replace(/_/g, " ")}</div></div>`).join("\n");
 
 const html = `<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
 <style>
