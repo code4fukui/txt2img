@@ -1,4 +1,4 @@
-import { createImage } from "./DALLE2.js";
+import { fetchImage } from "./fetchImage.js";
 
 if (Deno.args.length == 0) {
   console.log("txt2imgs [prompt]");
@@ -30,7 +30,7 @@ const ver = [
 
 for (const v of ver) {
   const prompt = v + " " + base;
-  const bin = await createImage(prompt);
+  const bin = await fetchImage(prompt);
   await Deno.writeFile(prompt.replace(/ /g, "_") + ".png", bin);
   console.log(prompt);
 }
