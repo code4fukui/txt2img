@@ -1,4 +1,4 @@
-import { fetchImage } from "./fetchImage.js";
+import { fetchImage, SIZE_SQUARE } from "./fetchImage.js";
 
 if (Deno.args.length == 0) {
   console.log("txt2imgs [prompt]");
@@ -28,9 +28,16 @@ const ver = [
   "High quality photo of",
 ];
 
+const size = SIZE_SQUARE;
 for (const v of ver) {
   const prompt = v + " " + base;
-  const bin = await fetchImage(prompt);
-  await Deno.writeFile(prompt.replace(/ /g, "_") + ".png", bin);
+  const fn = prompt.replace(/ /g, "_") + ".png";
+  try {
+    await Deno.readFile(fn);
+    continue;
+  } catch (e) {
+  }
   console.log(prompt);
+  const bin = await fetchImage(prompt, { size });
+  await Deno.writeFile(fn, bin);
 }

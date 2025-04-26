@@ -1,6 +1,6 @@
 # txt2img
 
-txt2img by [DALL-E-3 or DALL-E-2 / OpenAI](https://platform.openai.com/docs/api-reference/images/create)
+txt2img by [GPT-Image-1, DALL-E-3 or DALL-E-2 - OpenAI](https://platform.openai.com/docs/api-reference/images/create)
 
 ## usage
 
@@ -16,9 +16,11 @@ deno run -A https://code4fukui.github.io/txt2img/txt2img.js "koala wearing a str
 
 create 17 variations of images
 ```sh
-deno run -A https://code4fukui.github.io/txt2img/txt2img.js "koala wearing a strawberry hat"
+deno run -A https://code4fukui.github.io/txt2img/txt2imgs.js "koala wearing a strawberry hat"
 ```
 
 ## reference
 
 - https://platform.openai.com/docs/api-reference/images/create
+- https://platform.openai.com/docs/guides/image-generation?image-generation-model=gpt-image-1
+- https://platform.openai.com/docs/models/gpt-image-1
