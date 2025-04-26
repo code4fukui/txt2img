@@ -28,7 +28,7 @@ import { fetchImage, SIZE_PORTRAIT } from "https://code4fukui.github.io/txt2img/
 
 const prompt = "ランダムな画像";
 const bin = await fetchImage(prompt, { size: SIZE_PORTRAIT });
-await Deno.writeFile(prompt.replace("image.png", bin);
+await Deno.writeFile("image.png", bin);
 ```
 
 ## reference
