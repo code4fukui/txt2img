@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:">
+<title>TEST_GPTIMAGE Compare</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f5f6f8;
+  --panel: #ffffff;
+  --line: #d8dde6;
+  --text: #20242c;
+  --muted: #6a7280;
+  --accent: #1d6f8f;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+}
+h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+.meta {
+  color: var(--muted);
+  font-size: 13px;
+}
+main {
+  width: min(1600px, 100%);
+  margin: 0 auto;
+  padding: 18px 20px 32px;
+}
+.table {
+  display: grid;
+  gap: 18px;
+}
+.row {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+.caption {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+.number {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--line);
+}
+.cell {
+  min-width: 0;
+  background: #eef1f5;
+}
+.label {
+  padding: 7px 10px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+a.image-link {
+  display: grid;
+  place-items: center;
+  min-height: 260px;
+  padding: 10px;
+}
+img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 78vh;
+  object-fit: contain;
+}
+@media (max-width: 760px) {
+  header {
+    padding: 12px;
+  }
+  main {
+    padding: 12px 10px 24px;
+  }
+  .pair {
+    grid-template-columns: 1fr;
+  }
+  a.image-link {
+    min-height: 180px;
+  }
+}
+@media (min-width: 1280px) {
+  .table {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+  a.image-link {
+    min-height: 220px;
+  }
+}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>TEST_GPTIMAGE1 / TEST_GPTIMAGE2 Compare</h1>
+    <div class="meta"><span id="count"></span> files from list.txt</div>
+  </div>
+</header>
+<main>
+  <div id="table" class="table"></div>
+</main>
+<script>
+const dirs = ["TEST_GPTIMAGE1", "TEST_GPTIMAGE2"];
+const table = document.getElementById("table");
+const count = document.getElementById("count");
+
+const prettify = (file) => file.replace(/\.png$/i, "").replaceAll("_", " ");
+
+const render = (files) => {
+  count.textContent = files.length;
+  table.replaceChildren(...files.map((file, index) => {
+    const row = document.createElement("section");
+    row.className = "row";
+
+    const caption = document.createElement("div");
+    caption.className = "caption";
+    caption.innerHTML = `<span class="number">${String(index + 1).padStart(2, "0")}</span><span class="name"></span>`;
+    caption.querySelector(".name").textContent = prettify(file);
+    row.append(caption);
+
+    const pair = document.createElement("div");
+    pair.className = "pair";
+    dirs.forEach((dir) => {
+      const src = `${dir}/${file}`;
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      cell.innerHTML = `<div class="label">${dir}</div>`;
+
+      const link = document.createElement("a");
+      link.className = "image-link";
+      link.href = src;
+      link.target = "_blank";
+      link.rel = "noreferrer";
+
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = `${dir} ${prettify(file)}`;
+      img.loading = "lazy";
+      link.append(img);
+      cell.append(link);
+      pair.append(cell);
+    });
+    row.append(pair);
+    return row;
+  }));
+};
+
+fetch("list.txt")
+  .then((res) => {
+    if (!res.ok) {
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
+    return res.text();
+  })
+  .then((text) => {
+    const files = text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+    render(files);
+  })
+  .catch((err) => {
+    count.textContent = "0";
+    table.textContent = `list.txt を読み込めませんでした: ${err.message}`;
+  });
+</script>
+</body>
+</html>
